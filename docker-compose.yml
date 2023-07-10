@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    restart: always
+    environment:
+      - 'MYSQL_DATABASE=clusteredDataWarehouse'
+      - 'MYSQL_ALLOW_EMPTY_PASSWORD=yes'
+      - 'MYSQL_USERNAME=root'
+      - 'MYSQL_PASSWORD=09121996'
+    ports:
+      - '3306:3306'
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+
+  app-server:
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/clusteredDataWarehouse?autoReconnect=true&useUnicode=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    expose:
+      - '8099'
+    command: mvn clean spring-boot:run
+    ports:
+      - '8080:8080'
+    restart: always
+    depends_on:
+      - mysql
+    volumes:
+      - ~/.m2:/root/.m2
+      - .:/app
