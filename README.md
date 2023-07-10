@@ -8,7 +8,6 @@ This is to analyze fx deals by accepting deals and persisting in DB. Validation 
 ```sh
 docker-compose up
 ```
-On the first run, it fails because mysql database is yet to download completely. please do not close it as it will reconnect to sync up with the db
 
 ## Project Run
 #### How to run the project
